@@ -1,4 +1,4 @@
-package com.example.demo.otp;
+package com.example.otp.otp;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;

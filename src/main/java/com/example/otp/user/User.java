@@ -1,8 +1,9 @@
-package com.example.demo.user;
+package com.example.otp.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter

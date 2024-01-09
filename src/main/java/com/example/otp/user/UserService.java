@@ -1,6 +1,6 @@
-package com.example.demo.user;
+package com.example.otp.user;
 
-import com.example.demo.otp.GoogleOTP;
+import com.example.otp.otp.GoogleOTP;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

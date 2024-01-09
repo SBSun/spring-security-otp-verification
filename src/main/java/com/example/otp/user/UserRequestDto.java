@@ -1,7 +1,9 @@
-package com.example.demo.user;
+package com.example.otp.user;
 
-import lombok.*;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class UserRequestDto {
 
