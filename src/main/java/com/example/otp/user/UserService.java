@@ -1,31 +1,39 @@
 package com.example.otp.user;
 
 import com.example.otp.otp.GoogleOTP;
+import com.example.otp.user.repository.UserJooqRepository;
+import com.example.otp.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final UserJooqRepository userJooqRepository;
+
+    public List<User> getAllUser() {
+        return userJooqRepository.getAllUser();
+    }
 
     public String createUser(UserRequestDto.Signup signupDto) {
-        if(userRepository.existsByAccountId(signupDto.getAccountId()))
+        if(userJpaRepository.existsByAccountId(signupDto.getAccountId()))
             throw new IllegalArgumentException("이미 존재하는 계정입니다.");
 
         HashMap<String, String> map = GoogleOTP.generate(signupDto.getAccountId());
         User user = signupDto.toEntity();
         user.setAuthKey(map.get("key"));
-        userRepository.save(user);
+        userJpaRepository.save(user);
 
         return map.get("qrUrl");
     }
 
     public void login(UserRequestDto.Login loginDto) {
-        User getUser = userRepository.findByAccountId(loginDto.getAccountId())
+        User getUser = userJpaRepository.findByAccountId(loginDto.getAccountId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
 
         // 비밀번호 불일치
