@@ -1,4 +1,4 @@
-package com.example.otp.user;
+package com.example.otp.domain.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -16,7 +16,8 @@ import java.util.Collection;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @Column(name = "user_id")
+    private Long id;
 
     @NotNull
     private String accountId;   // 로그인 아이디

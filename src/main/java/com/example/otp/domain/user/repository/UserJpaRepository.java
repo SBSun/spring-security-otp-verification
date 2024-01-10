@@ -1,6 +1,6 @@
-package com.example.otp.user.repository;
+package com.example.otp.domain.user.repository;
 
-import com.example.otp.user.User;
+import com.example.otp.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

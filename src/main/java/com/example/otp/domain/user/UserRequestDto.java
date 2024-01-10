@@ -1,4 +1,4 @@
-package com.example.otp.user;
+package com.example.otp.domain.user;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

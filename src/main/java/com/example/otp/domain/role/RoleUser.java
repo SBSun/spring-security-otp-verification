@@ -1,4 +1,4 @@
-package com.example.otp.role;
+package com.example.otp.domain.role;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,9 +14,9 @@ public class RoleUser {
     @Column(name = "role_user_id")
     private Long id;
 
-    @Column(name = "menu_id")
+    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "role_menu_id")
-    private Long roleMenuId;
+    @Column(name = "role_id")
+    private Long roleId;
 }

@@ -1,8 +1,11 @@
-package com.example.otp.user;
+package com.example.otp.domain.user.service;
 
-import com.example.otp.otp.GoogleOTP;
-import com.example.otp.user.repository.UserJooqRepository;
-import com.example.otp.user.repository.UserJpaRepository;
+import com.example.otp.domain.user.User;
+import com.example.otp.domain.user.repository.UserJpaRepository;
+import com.example.otp.global.otp.GoogleOTP;
+import com.example.otp.domain.user.UserRequestDto;
+import com.example.otp.domain.user.repository.UserJooqRepository;
+import com.example.otp.global.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +18,16 @@ public class UserService {
 
     private final UserJpaRepository userJpaRepository;
     private final UserJooqRepository userJooqRepository;
+    private final TokenProvider tokenProvider;
 
     public List<User> getAllUser() {
         return userJooqRepository.getAllUser();
     }
 
     public String createUser(UserRequestDto.Signup signupDto) {
-        if(userJpaRepository.existsByAccountId(signupDto.getAccountId()))
+        if (userJpaRepository.existsByAccountId(signupDto.getAccountId())) {
             throw new IllegalArgumentException("이미 존재하는 계정입니다.");
+        }
 
         HashMap<String, String> map = GoogleOTP.generate(signupDto.getAccountId());
         User user = signupDto.toEntity();
@@ -32,20 +37,25 @@ public class UserService {
         return map.get("qrUrl");
     }
 
-    public void login(UserRequestDto.Login loginDto) {
+    public String login(UserRequestDto.Login loginDto) {
         User getUser = userJpaRepository.findByAccountId(loginDto.getAccountId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
 
         // 비밀번호 불일치
-        if(!getUser.getPassword().equals(loginDto.getPassword()))
+        if (!getUser.getPassword().equals(loginDto.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
 
         // 인증키가 존재하지 않을 경우
-        if(getUser.getAuthKey().isBlank())
+        if (getUser.getAuthKey().isBlank()) {
             throw new IllegalArgumentException("인증키가 존재하지 않으므로 다시 QR URL 생성");
+        }
 
         // OTP Code가 틀렸을 경우
-        if(!GoogleOTP.verifyOTP(getUser.getAuthKey(), loginDto.getOtpCode()))
+        if (!GoogleOTP.verifyOTP(getUser.getAuthKey(), loginDto.getOtpCode())) {
             throw new IllegalArgumentException("OTP Code가 일치하지 않습니다.");
+        }
+
+        return tokenProvider.createToken();
     }
 }

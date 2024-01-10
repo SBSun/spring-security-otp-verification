@@ -1,4 +1,4 @@
-package com.example.otp.menu;
+package com.example.otp.domain.menu;
 
 import jakarta.persistence.Entity;
 import lombok.Getter;
@@ -15,9 +15,6 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "menu_id")
     private Long id;
-
-    @Column(name = "upper_menu_id")
-    private Long upperMenuId;
 
     @Column(name = "menu_name")
     private String name;

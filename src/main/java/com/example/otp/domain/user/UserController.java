@@ -1,5 +1,6 @@
-package com.example.otp.user;
+package com.example.otp.domain.user;
 
+import com.example.otp.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,12 @@ public class UserController {
     @PostMapping
     public ResponseEntity<String> signup(@RequestBody UserRequestDto.Signup signupDto) {
         String qrUrl = userService.createUser(signupDto);
-
         return ResponseEntity.ok(qrUrl);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody UserRequestDto.Login loginDto) {
-        userService.login(loginDto);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> login(@RequestBody UserRequestDto.Login loginDto) {
+        String token = userService.login(loginDto);
+        return ResponseEntity.ok(token);
     }
 }

@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create        # DB ??? ?? (none, create, create-drop, update, validate)
+      ddl-auto: update        # DB ??? ?? (none, create, create-drop, update, validate)
     properties:
       hibernate:
         format_sql: true
@@ -23,3 +23,10 @@ spring:
   #jOOQ Configuration
   jooq:
     sql-dialect: mysql
+
+logging:
+  level:
+    org:
+      jooq:
+        tools:
+          LoggerListener: debug

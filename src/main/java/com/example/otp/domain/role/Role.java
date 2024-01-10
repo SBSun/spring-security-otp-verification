@@ -1,4 +1,4 @@
-package com.example.otp.role;
+package com.example.otp.domain.role;
 
 
 import jakarta.persistence.*;

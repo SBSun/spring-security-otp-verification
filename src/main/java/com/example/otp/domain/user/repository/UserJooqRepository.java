@@ -1,15 +1,17 @@
-package com.example.otp.user.repository;
+package com.example.otp.domain.user.repository;
 
-import com.example.otp.user.User;
+import com.example.otp.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.example.jooq.tables.User.USER;
 
 @Repository
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserJooqRepository {
 
@@ -24,7 +26,7 @@ public class UserJooqRepository {
     public User findById(Long id) {
         return dslContext
                 .selectFrom(USER)
-                .where(USER.ID.eq(id))
+                .where(USER.USER_ID.eq(id))
                 .fetchOneInto(User.class);
     }
 }
