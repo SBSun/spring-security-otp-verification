@@ -24,6 +24,9 @@ spring:
   jooq:
     sql-dialect: mysql
 
+jwt:
+  secret: 71b2def514eb60cc80e5b701aa5c6de66c33e9699e9a7f615a6a9998ae190c3db5a985081c8a150cf1d9b7fa9f32aa9bfcb568d9eda911c88274ead183ddb15e
+
 logging:
   level:
     org:

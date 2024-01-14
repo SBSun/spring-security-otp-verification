@@ -17,10 +17,6 @@ public class UserRequestDto {
 
         @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
         private String password;
-
-        public User toEntity() {
-            return new User(accountId, password);
-        }
     }
 
     @Getter

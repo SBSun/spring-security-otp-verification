@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.jooq.tables.User.USER;
 
@@ -21,6 +22,16 @@ public class UserJooqRepository {
         return dslContext
                 .selectFrom(USER)
                 .fetchInto(User.class);
+    }
+
+    public Optional<User> findByAccountId(String accountId) {
+
+        User user = dslContext
+                .selectFrom(USER)
+                .where(USER.ACCOUNT_ID.eq(accountId))
+                .fetchOneInto(User.class);
+
+        return Optional.ofNullable(user);
     }
 
     public User findById(Long id) {
