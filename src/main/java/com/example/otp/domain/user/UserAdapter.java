@@ -39,7 +39,7 @@ public class UserAdapter implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getAccountId();
+        return user.getEmail();
     }
 
     @Override

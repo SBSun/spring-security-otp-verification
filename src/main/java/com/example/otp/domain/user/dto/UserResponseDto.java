@@ -12,4 +12,12 @@ public class UserResponseDto {
 
         private String accessToken;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Login {
+
+        private Boolean isFirstLogin;
+        private String qrUrl;
+    }
 }

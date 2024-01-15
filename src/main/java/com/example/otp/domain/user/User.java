@@ -21,8 +21,8 @@ public class User {
     private Long id;
 
     @NotNull
-    @Column(name = "account_id")
-    private String accountId;   // 로그인 아이디
+    @Column(name = "email")
+    private String email;       // 이메일
 
     @NotNull
     @Column(name = "password")
@@ -39,8 +39,8 @@ public class User {
     }
 
     @Builder
-    public User(String accountId, String password, String authKey) {
-        this.accountId = accountId;
+    public User(String email, String password, String authKey) {
+        this.email = email;
         this.password = password;
         this.authKey = authKey;
         this.roles = "ROLE_USER";

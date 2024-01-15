@@ -37,30 +37,58 @@ public class UserService {
     }
 
     @Transactional
-    public String createUser(UserRequestDto.Signup signupDto) {
-        if (userJpaRepository.existsByAccountId(signupDto.getAccountId())) {
+    public void createUser(UserRequestDto.Signup signupDto) {
+        if (userJpaRepository.existsByEmail(signupDto.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 계정입니다.");
         }
 
-        HashMap<String, String> map = GoogleOTP.generate(signupDto.getAccountId());
         User user = User.builder()
-                .accountId(signupDto.getAccountId())
+                .email(signupDto.getEmail())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
-                .authKey(map.get(AUTH_KEY))
+                .authKey(null)
                 .build();
 
         userJpaRepository.save(user);
-
-        return map.get(QR_URL);
     }
 
     /**
-     * 로그인
+     * 로그인(아이디 비밀번호)
+     * 첫 로그인(O): 첫 로그인이라는 true 값과 QR Url 반환
+     * 첫 로그인(X): 첫 로그인이 아니라는 false 값과 null 반환
      */
-    public UserResponseDto.Token login(UserRequestDto.Login loginDto) {
+    @Transactional
+    public UserResponseDto.Login login(UserRequestDto.Login loginDto) {
+        User user = userJpaRepository.findByEmail(loginDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
+
+        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        UserResponseDto.Login responseDto;
+
+        // Auth Key가 존재하지 않으면 첫 로그인 시도
+        if (!StringUtils.hasText(user.getAuthKey())) {
+            // 첫 로그인이라는 boolean 값과 QRUrl 반환
+            HashMap<String, String> map = GoogleOTP.generate(loginDto.getEmail());
+            user.setAuthKey(map.get(AUTH_KEY));
+            responseDto = new UserResponseDto.Login(true, map.get(QR_URL));
+        } else {
+            responseDto = new UserResponseDto.Login(false, null);
+        }
+
+        return responseDto;
+    }
+
+
+    /**
+     * OTP 인증
+     * 아이디, 비밀번호, OTP Code 검증
+     */
+    public UserResponseDto.Token authenticateOtp(UserRequestDto.Otp otpDto) {
         // 입력한 accountId와 password로 UsernamePasswordAuthenticationToken 객체 생성
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getAccountId(), loginDto.getPassword());
+                new UsernamePasswordAuthenticationToken(otpDto.getEmail(), otpDto.getPassword());
 
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService의 loadUserByUsername 메서드가 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -68,25 +96,24 @@ public class UserService {
         UserAdapter userAdapter = (UserAdapter)authentication.getPrincipal();
         User user = userAdapter.getUser();
 
-        // Auth Key가 존재하지 않거나 OTP Code가 일치하지 않을 경우
-        if (!StringUtils.hasText(user.getAuthKey()) ||
-                !GoogleOTP.verifyOTP(user.getAuthKey(), loginDto.getOtpCode())) {
-            throw new IllegalArgumentException("인증키가 존재하지 않거나 OTP Code가 일치하지 않으므로 다시 QR URL 생성");
+        if (!GoogleOTP.verifyOTP(user.getAuthKey(), otpDto.getOtpCode())) {
+            throw new IllegalArgumentException("OTP Code가 일치하지 않습니다.");
         }
 
-        return new UserResponseDto.Token(tokenProvider.createAccessToken(authentication));
+        String accessToken = tokenProvider.createAccessToken(authentication);
+        return new UserResponseDto.Token(accessToken);
     }
 
     @Transactional
     public String reissueQRUrl(UserRequestDto.ReissueQRUrl reissueQRUrlDto) {
-        User user = userJpaRepository.findByAccountId(reissueQRUrlDto.getAccountId())
+        User user = userJpaRepository.findByEmail(reissueQRUrlDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
 
         if (!passwordEncoder.matches(reissueQRUrlDto.getPassword(), user.getPassword())){
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        HashMap<String, String> map = GoogleOTP.generate(reissueQRUrlDto.getAccountId());
+        HashMap<String, String> map = GoogleOTP.generate(reissueQRUrlDto.getEmail());
         user.setAuthKey(map.get(AUTH_KEY));
 
         return map.get(QR_URL);

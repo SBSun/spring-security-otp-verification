@@ -16,10 +16,10 @@ public class CustomUserDetailService implements UserDetailsService {
     private final UserJpaRepository userJpaRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String accountId) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User user = userJpaRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new UsernameNotFoundException(accountId + ": 존재하지 않는 accountId입니다."));
+        User user = userJpaRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email + ": 존재하지 않는 email입니다."));
 
         return new UserAdapter(user);
     }
