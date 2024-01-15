@@ -26,7 +26,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         UserAdapter userAdapter = (UserAdapter) userDetailsService.loadUserByUsername(name);
 
-        if(!passwordEncoder.matches(password, userAdapter.getPassword())){
+        if (!passwordEncoder.matches(password, userAdapter.getPassword())){
             throw new BadCredentialsException(userAdapter.getUsername() + " Invalid password");
         }
 

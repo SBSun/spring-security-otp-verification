@@ -1,4 +1,4 @@
-package com.example.otp.domain.menu;
+package com.example.otp.domain.menu.repository;
 
 import com.example.jooq.tables.MenuRelation;
 import com.example.otp.domain.menu.dto.MenuResponseDto;
@@ -19,16 +19,6 @@ import static org.jooq.impl.DSL.*;
 public class MenuJooqRepository {
 
     private final DSLContext dslContext;
-
-    public boolean existsById(Long menuId) {
-        return dslContext
-                .fetchExists(
-                        dslContext
-                                .selectOne()
-                                .from(MENU)
-                                .where(MENU.MENU_ID.eq(menuId))
-                );
-    }
 
     /*
         특정 메뉴의 하위 메뉴들의 Id, Name, 상위 Menu Id를 조회
@@ -62,7 +52,7 @@ public class MenuJooqRepository {
                                                         .and(mr.DEPTH.eq(1L)))
                                 )
                 )
-                .select(
+                .selectDistinct(
                         field(name("menu_hierarchy", "id"), Long.class),
                         MENU.MENU_NAME,
                         field(name("menu_hierarchy", "ancestorId"), Long.class)

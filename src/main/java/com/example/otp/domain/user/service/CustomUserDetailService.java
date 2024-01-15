@@ -2,7 +2,7 @@ package com.example.otp.domain.user.service;
 
 import com.example.otp.domain.user.User;
 import com.example.otp.domain.user.UserAdapter;
-import com.example.otp.domain.user.repository.UserJooqRepository;
+import com.example.otp.domain.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final UserJooqRepository userJooqRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Override
     public UserDetails loadUserByUsername(String accountId) throws UsernameNotFoundException {
 
-        User user = userJooqRepository.findByAccountId(accountId)
+        User user = userJpaRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new UsernameNotFoundException(accountId + ": 존재하지 않는 accountId입니다."));
 
         return new UserAdapter(user);

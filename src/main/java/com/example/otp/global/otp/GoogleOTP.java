@@ -8,6 +8,9 @@ import java.util.HashMap;
 
 public class GoogleOTP {
 
+    public static String AUTH_KEY = "key";
+    public static String QR_URL = "qrUrl";
+
     public static HashMap<String, String> generate(String accountId) {
         HashMap<String, String> map = new HashMap<String, String>();
 
@@ -20,8 +23,8 @@ public class GoogleOTP {
 
         String qrUrl = GoogleAuthenticatorQRGenerator.getOtpAuthURL("account", accountId, googleAuthenticatorKey);
 
-        map.put("key", key);
-        map.put("qrUrl", qrUrl);
+        map.put(AUTH_KEY, key);
+        map.put(QR_URL, qrUrl);
 
         return map;
     }
