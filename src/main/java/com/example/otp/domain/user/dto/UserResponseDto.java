@@ -32,4 +32,16 @@ public class UserResponseDto {
         private String phone;
         private LocalDateTime createdAt;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class SignupApply {
+
+        private Long id;
+        private String email;
+        private String name;
+        private String phone;
+        private Character userType;
+        private LocalDateTime createdAt;
+    }
 }

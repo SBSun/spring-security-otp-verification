@@ -37,10 +37,15 @@ public class UserController {
         return ResponseEntity.ok(userService.search(name, phone));
     }
 
-    @PreAuthorize("isAnonymous")
-    @PostMapping
-    public ResponseEntity<Void> signup(@RequestBody @Validated UserRequestDto.Signup signupDto) {
-        userService.createUser(signupDto);
+    /**
+     * 회원가입 요청을 승인하는 API
+     * @param signupApproveDto
+     * @return
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/signup/approve")
+    public ResponseEntity<Void> signupApprove(@RequestBody @Validated UserRequestDto.SignupApprove signupApproveDto) {
+        userService.createUser(signupApproveDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

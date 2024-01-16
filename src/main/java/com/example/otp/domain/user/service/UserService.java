@@ -2,15 +2,16 @@ package com.example.otp.domain.user.service;
 
 import com.example.otp.domain.user.User;
 import com.example.otp.domain.user.UserAdapter;
+import com.example.otp.domain.user.UserSignupApply;
 import com.example.otp.domain.user.UserType;
 import com.example.otp.domain.user.dto.UserResponseDto;
 import com.example.otp.domain.user.repository.UserJooqRepository;
 import com.example.otp.domain.user.repository.UserJpaRepository;
+import com.example.otp.domain.user.repository.UserSignupApplyJpaRepository;
 import com.example.otp.global.otp.GoogleOTP;
 import com.example.otp.domain.user.dto.UserRequestDto;
 import com.example.otp.global.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,8 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final PasswordEncoder passwordEncoder;
 
+    private final UserSignupApplyJpaRepository userSignupApplyJpaRepository;
+
     public List<User> getAllUser() {
         return userJpaRepository.findAll();
     }
@@ -45,25 +48,25 @@ public class UserService {
     }
 
     /**
-     * 회원가입
-     * @param signupDto
+     * 회원가입 승인
+     * @param signupApproveDto
      */
     @Transactional
-    public void createUser(UserRequestDto.Signup signupDto) {
-        if (userJpaRepository.existsByEmail(signupDto.getEmail())) {
-            throw new IllegalArgumentException("이미 존재하는 계정입니다.");
-        }
+    public void createUser(UserRequestDto.SignupApprove signupApproveDto) {
+        UserSignupApply userSignupApply = userSignupApplyJpaRepository.findById(signupApproveDto.getSignupApplyId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원가입 요청입니다."));
 
         User user = User.builder()
-                .email(signupDto.getEmail())
-                .password(passwordEncoder.encode(signupDto.getPassword()))
-                .name(signupDto.getName())
-                .phone(signupDto.getPhone())
-                .userType(UserType.of(signupDto.getUserType()))
-                .authKey(null)
+                .email(userSignupApply.getEmail())
+                .password(userSignupApply.getPassword())
+                .name(userSignupApply.getName())
+                .phone(userSignupApply.getPhone())
+                .userType(UserType.of(userSignupApply.getUserType()))
                 .build();
 
+        // user 저장과 함께 회원가입 요청 삭제
         userJpaRepository.save(user);
+        userSignupApplyJpaRepository.delete(userSignupApply);
     }
 
     /**

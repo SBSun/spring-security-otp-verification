@@ -10,7 +10,7 @@ public class UserRequestDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Signup{
+    public static class SignupApply {
 
         @NotBlank(message = "이메일은 필수 입력 값입니다.")
         @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
@@ -28,6 +28,15 @@ public class UserRequestDto {
 
         @NotNull(message = "사용자 타입은 필수 입력 값입니다.")
         private Character userType;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SignupApprove {
+
+        @NotNull
+        private Long signupApplyId;
     }
 
     @Getter
