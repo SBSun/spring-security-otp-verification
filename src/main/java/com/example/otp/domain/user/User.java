@@ -40,20 +40,20 @@ public class User extends BaseEntity {
     @Column(name = "auth_key")
     private String authKey;     // 인증키
 
-    @Column(name = "roles")
-    private String roles;       // 권한
+    @Column(name = "user_type")
+    private Character userType;       // 권한
 
     public void setAuthKey(String authKey) {
         this.authKey = authKey;
     }
 
     @Builder
-    public User(String email, String password, String name, String phone, String authKey) {
+    public User(String email, String password, String name, String phone, String authKey, UserType userType) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.phone = phone;
         this.authKey = authKey;
-        this.roles = "ROLE_USER";
+        this.userType = userType.getType();
     }
 }

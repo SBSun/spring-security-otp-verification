@@ -2,6 +2,7 @@ package com.example.otp.domain.user.service;
 
 import com.example.otp.domain.user.User;
 import com.example.otp.domain.user.UserAdapter;
+import com.example.otp.domain.user.UserType;
 import com.example.otp.domain.user.dto.UserResponseDto;
 import com.example.otp.domain.user.repository.UserJooqRepository;
 import com.example.otp.domain.user.repository.UserJpaRepository;
@@ -43,6 +44,10 @@ public class UserService {
         return userJooqRepository.search(name, phone);
     }
 
+    /**
+     * 회원가입
+     * @param signupDto
+     */
     @Transactional
     public void createUser(UserRequestDto.Signup signupDto) {
         if (userJpaRepository.existsByEmail(signupDto.getEmail())) {
@@ -54,6 +59,7 @@ public class UserService {
                 .password(passwordEncoder.encode(signupDto.getPassword()))
                 .name(signupDto.getName())
                 .phone(signupDto.getPhone())
+                .userType(UserType.of(signupDto.getUserType()))
                 .authKey(null)
                 .build();
 
@@ -88,7 +94,6 @@ public class UserService {
 
         return responseDto;
     }
-
 
     /**
      * OTP 인증

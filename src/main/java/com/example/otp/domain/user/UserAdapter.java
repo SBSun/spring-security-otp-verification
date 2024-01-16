@@ -25,10 +25,7 @@ public class UserAdapter implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-
-        for (String role : user.getRoles().split(",")) {
-            authorities.add(new SimpleGrantedAuthority(role));
-        }
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getUserType().toString()));
         return authorities;
     }
 

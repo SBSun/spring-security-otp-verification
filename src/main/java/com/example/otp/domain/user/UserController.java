@@ -25,6 +25,13 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUser());
     }
 
+    /**
+     * 이름
+     * @param name
+     * @param phone
+     * @return
+     */
+    @PreAuthorize("isAuthenticated")
     @GetMapping("/search")
     public ResponseEntity<List<UserResponseDto.Info>> search(@RequestParam String name, @RequestParam String phone) {
         return ResponseEntity.ok(userService.search(name, phone));
