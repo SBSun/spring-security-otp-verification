@@ -1,5 +1,6 @@
 package com.example.otp.domain.user;
 
+import com.example.otp.global.commons.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
@@ -14,19 +15,27 @@ import java.util.Collection;
 @Getter
 @NoArgsConstructor
 @Table(name = "\"user\"")
-public class User {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
-    @NotNull
+    @NotBlank
     @Column(name = "email")
     private String email;       // 이메일
 
-    @NotNull
+    @NotBlank
     @Column(name = "password")
     private String password;    // 비밀번호
+
+    @NotBlank
+    @Column(name = "name")
+    private String name;
+
+    @NotBlank
+    @Column(name = "phone")
+    private String phone;
 
     @Column(name = "auth_key")
     private String authKey;     // 인증키
@@ -39,9 +48,11 @@ public class User {
     }
 
     @Builder
-    public User(String email, String password, String authKey) {
+    public User(String email, String password, String name, String phone, String authKey) {
         this.email = email;
         this.password = password;
+        this.name = name;
+        this.phone = phone;
         this.authKey = authKey;
         this.roles = "ROLE_USER";
     }

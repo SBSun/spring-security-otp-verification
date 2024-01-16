@@ -3,11 +3,13 @@ package com.example.otp.domain.user.service;
 import com.example.otp.domain.user.User;
 import com.example.otp.domain.user.UserAdapter;
 import com.example.otp.domain.user.dto.UserResponseDto;
+import com.example.otp.domain.user.repository.UserJooqRepository;
 import com.example.otp.domain.user.repository.UserJpaRepository;
 import com.example.otp.global.otp.GoogleOTP;
 import com.example.otp.domain.user.dto.UserRequestDto;
 import com.example.otp.global.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -28,12 +30,17 @@ import static com.example.otp.global.otp.GoogleOTP.QR_URL;
 public class UserService {
 
     private final UserJpaRepository userJpaRepository;
+    private final UserJooqRepository userJooqRepository;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final PasswordEncoder passwordEncoder;
 
     public List<User> getAllUser() {
         return userJpaRepository.findAll();
+    }
+
+    public List<UserResponseDto.Info> search(String name, String phone) {
+        return userJooqRepository.search(name, phone);
     }
 
     @Transactional
@@ -45,6 +52,8 @@ public class UserService {
         User user = User.builder()
                 .email(signupDto.getEmail())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
+                .name(signupDto.getName())
+                .phone(signupDto.getPhone())
                 .authKey(null)
                 .build();
 

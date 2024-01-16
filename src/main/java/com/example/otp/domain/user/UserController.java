@@ -25,6 +25,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUser());
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<UserResponseDto.Info>> search(@RequestParam String name, @RequestParam String phone) {
+        return ResponseEntity.ok(userService.search(name, phone));
+    }
+
     @PreAuthorize("isAnonymous")
     @PostMapping
     public ResponseEntity<Void> signup(@RequestBody @Validated UserRequestDto.Signup signupDto) {

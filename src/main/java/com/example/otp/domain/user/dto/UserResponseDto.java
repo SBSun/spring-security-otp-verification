@@ -4,6 +4,8 @@ package com.example.otp.domain.user.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 public class UserResponseDto {
 
     @Getter
@@ -19,5 +21,15 @@ public class UserResponseDto {
 
         private Boolean isFirstLogin;
         private String qrUrl;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Info {
+
+        private Long id;
+        private String name;
+        private String phone;
+        private LocalDateTime createdAt;
     }
 }

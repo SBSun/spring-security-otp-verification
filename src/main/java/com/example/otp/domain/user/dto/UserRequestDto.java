@@ -19,6 +19,12 @@ public class UserRequestDto {
         @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
         private String password;
+
+        @NotBlank(message = "이름은 필수 입력 값입니다.")
+        private String name;
+
+        @NotBlank(message = "전화번호는 필수 입력 값입니다.")
+        private String phone;
     }
 
     @Getter
